@@ -115,16 +115,18 @@ public class StudentDA {
      * @return Student
      * @throws NotFoundException if the data record is not found in the database.
      */
-    public static Student retrieve(long id) throws NotFoundException
-    {
+    public static Student retrieve(long id) throws NotFoundException {
         aStudent = null;
 
-        String sqlQuery = "SELECT users.Id, Password, FirstName, LastName, EmailAddress, LastAccess,\n" +
-                "EnrolDate, Enable, Type, ProgramCode, ProgramDescription, Year\n" +
-                "FROM users, students WHERE users.id = students.StudentId AND users.Id ='" + id + "'";
+//        String sqlQuery = "SELECT users.Id, Password, FirstName, LastName, EmailAddress, LastAccess,\n" +
+//                "EnrolDate, Enable, Type, ProgramCode, ProgramDescription, Year\n" +
+//                "FROM users, students WHERE users.id = students.StudentId AND users.Id ='" + id + "'";
 
         try {
-            ResultSet rs = aStatement.executeQuery(sqlQuery);
+            PreparedStatement psRetrieve = aConnection.prepareStatement("SELECT users.Id, Password, FirstName, LastName, EmailAddress, LastAccess,EnrolDate, Enable, Type, ProgramCode, ProgramDescription, Year FROM users, students WHERE users.id = students.StudentId AND users.Id = ? ;");
+            psRetrieve.setLong(1,id);
+            psRetrieve.execute();
+            ResultSet rs = aStatement.executeQuery(String.valueOf(psRetrieve));
 
             boolean gotData = rs.next();
             if (gotData) {
